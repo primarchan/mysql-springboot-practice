@@ -2,12 +2,14 @@ package com.example.fastcampusmysql.domain.member.entity;
 
 import lombok.Builder;
 import lombok.Getter;
+import lombok.ToString;
 import org.springframework.util.Assert;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
+@ToString
 @Getter
 public class Member {
     final private Long id;

@@ -1,6 +1,7 @@
 package com.example.fastcampusmysql.domain.member.repository;
 
 import com.example.fastcampusmysql.domain.member.entity.Member;
+import com.example.fastcampusmysql.domain.member.entity.MemberNicknameHistory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
@@ -13,62 +14,52 @@ import org.springframework.stereotype.Repository;
 import java.sql.ResultSet;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 @RequiredArgsConstructor
 @Repository
-public class MemberRepository {
+public class MemberNicknameHistoryRepository {
     final private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
-    static final private String TABLE = "Member";
-    static final RowMapper<Member> rowMapper = (ResultSet resultSet, int rowNum) -> Member
+    static final private String TABLE = "MemberNicknameHistory";
+    static final RowMapper<MemberNicknameHistory> rowMapper = (ResultSet resultSet, int rowNum) -> MemberNicknameHistory
             .builder()
             .id(resultSet.getLong("id"))
-            .email(resultSet.getString("email"))
+            .memberId(resultSet.getLong("memberId"))
             .nickname(resultSet.getString("nickname"))
-            .birthday(resultSet.getObject("birthday", LocalDate.class))
             .createdAt(resultSet.getObject("createdAt", LocalDateTime.class))
             .build();
 
-    public Optional<Member> findById(Long id) {
-        var sql = String.format("SELECT * FROM %s WHERE id = :id", TABLE);
-        var param = new MapSqlParameterSource()
-                .addValue("id", id);
-        var member = namedParameterJdbcTemplate.queryForObject(sql, param, rowMapper);
-        return Optional.ofNullable(member);
+    public List<MemberNicknameHistory> findAllByMemberId(Long memberId) {
+        var sql = String.format("SELECT * FROM %s WHERE memberId = :memberId", TABLE);
+        var parmas = new MapSqlParameterSource().addValue("memberId", memberId);
+        return namedParameterJdbcTemplate.query(sql, parmas, rowMapper);
     }
 
-    public Member save(Member member) {
+    public MemberNicknameHistory save(MemberNicknameHistory memberNicknameHistory) {
         /**
          * member id 를 보고 갱신 또는 삽입을 결정
          * 반환값은 id 를 담아서 반환
          */
-        if (member.getId() == null) {
-            return insert(member);
+        if (memberNicknameHistory.getId() == null) {
+            return insert(memberNicknameHistory);
         }
-        return update(member);
+        throw new UnsupportedOperationException("MemberNicknameHistory 는 갱신을 지원하지 않습니다.");
     }
 
-    private Member insert(Member member) {
+    private MemberNicknameHistory insert(MemberNicknameHistory memberNicknameHistory) {
         SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(namedParameterJdbcTemplate.getJdbcTemplate())
                 .withTableName(TABLE)
                 .usingGeneratedKeyColumns("id");
-        SqlParameterSource params = new BeanPropertySqlParameterSource(member);
+        SqlParameterSource params = new BeanPropertySqlParameterSource(memberNicknameHistory);
         var id = simpleJdbcInsert.executeAndReturnKey(params).longValue();
-        return Member.builder()
+        return MemberNicknameHistory.builder()
                 .id(id)
-                .email(member.getEmail())
-                .nickname(member.getNickname())
-                .birthday(member.getBirthday())
-                .createdAt(member.getCreatedAt())
+                .memberId(memberNicknameHistory.getMemberId())
+                .nickname(memberNicknameHistory.getNickname())
+                .createdAt(memberNicknameHistory.getCreatedAt())
                 .build();
 
-    }
-
-    private Member update(Member member) {
-        var sql = String.format("UPDATE %s set email = :email, nickname = :nickname, birthday = :birthday WHERE id = :id", TABLE);
-        SqlParameterSource params = new BeanPropertySqlParameterSource(member);
-        namedParameterJdbcTemplate.update(sql, params);
-        return member;
     }
 
 }
