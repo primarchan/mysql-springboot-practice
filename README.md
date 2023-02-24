@@ -70,3 +70,14 @@
   - 리프 노드에만 데이터 존재
     - 연속적인 데이터 접근 시 유리
   - [B+ Tree 실습 링크](https://www.cs.usfca.edu/~galles/visualization/BPlusTree.html)
+
+### 클러스터 인덱스
+- 클러스터 인덱스는 데이터 위치를 결정하는 키 값이다.
+  - 클러스터 키 순서에 따라서 데이터 저장 위치가 변경된다. (클러스터 키 삽입/갱신 시에 성능 이슈 발생)
+- MySQL 의 PK 는 클러스터 인덱스다.
+  - PK 로 Auto Increment vs UUID
+- MySQL 에서 PK 를 제외한 모든 인덱스는 PK 를 가지고 있다.
+  - PK 의 사이즈가 인덱스의 사이즈를 결정
+- 클러스터 인덱스의 장점
+  - PK 를 활용한 검색이 빠름 (특히 범위 검색)
+  - Secondary Index 들이 PK 를 가지고 있어 커버링에 유리
