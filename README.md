@@ -86,3 +86,11 @@
 - 요구사항
   - 사용자가 작성한 글 캘린더 구현
     - 작성일자와 일자별 회원의 작성한 게시물 갯수를 반환한다.
+  - 데이터의 분포도에 따라 인덱스에 의한 성능 향상 정도가 달라진다. (데이터 분포도를 고려하지 않은 인덱스는 오히려 성능 저하를 발생)
+  - 예시 쿼리
+```sql
+explain SELECT createdDate, memberId, count(id)
+FROM POST use index (POST__index_member_id_created_date)
+WHERE memberId = 1 AND createdDate BETWEEN '1900-01-01' AND '2023-01-01'
+GROUP BY memberId, createdDate;
+```

@@ -21,14 +21,13 @@ public class PostBulkInsertTest {
     public void bulkInsert() {
         var easyRandom = PostFixtureFactory.get(
                 3L,
-                LocalDate.of(2022, 1, 1),
+                LocalDate.of(1970, 1, 1),
                 LocalDate.of(2022, 2, 1)
         );
 
         IntStream.range(0, 5)
                 .mapToObj(i -> easyRandom.nextObject(Post.class))
                 .forEach(x -> postRepository.save(x));
-
     }
 
 }
