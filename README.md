@@ -87,10 +87,23 @@
   - 사용자가 작성한 글 캘린더 구현
     - 작성일자와 일자별 회원의 작성한 게시물 갯수를 반환한다.
   - 데이터의 분포도에 따라 인덱스에 의한 성능 향상 정도가 달라진다. (데이터 분포도를 고려하지 않은 인덱스는 오히려 성능 저하를 발생)
-  - 예시 쿼리
+  - 실행 계획이 포함된 쿼리 예시
 ```sql
 explain SELECT createdDate, memberId, count(id)
 FROM POST use index (POST__index_member_id_created_date)
-WHERE memberId = 1 AND createdDate BETWEEN '1900-01-01' AND '2023-01-01'
+WHERE memberId = 1 AND createdDate BETWEEN '1900-01-01' AND '2024-01-01'
 GROUP BY memberId, createdDate;
 ```
+- 인덱스를 다룰 때 주의해야할 점
+  - 인덱스 필드 가공
+    - 인덱스 필드의 값 or 타입을 변경할 경우, 인덱스를 사용할 수 없음
+  - 복합 인덱스
+    - 두 개 이상의 컬럼으로 구성된 인덱스
+    - 복합 인덱스 생성 시 선두 컬럼 선정이 굉장히 중요
+  - 하나의 쿼리에는 하나의 인덱스만 탐
+    - 여러 인덱스 테이블을 동시에 탐색하지 않음
+    - WHERE, ORDER BY, GROUP BY 혼합해서 사용할 때에는 인덱스를 잘 고려
+  - 의도대로 인덱스가 동작하지 않을 수 있음 -> explain 으로 확인
+  - 인덱스도 비용이다. 쓰기를 희생하고 조회 성능 향상을 얻는 것
+  - 꼭 인덱스로만 해결할 수 있는 문제인가에 대해서 고민
+  - 데이터의 식별 정도가 높은 컬럼으로 인덱스를 지정
