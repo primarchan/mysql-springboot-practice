@@ -13,21 +13,37 @@ import java.util.stream.IntStream;
 
 @SpringBootTest
 public class PostBulkInsertTest {
-
     @Autowired
     private PostRepository postRepository;
+
 
     @Test
     public void bulkInsert() {
         var easyRandom = PostFixtureFactory.get(
-                3L,
+                4L,
                 LocalDate.of(1970, 1, 1),
                 LocalDate.of(2022, 2, 1)
         );
 
-        IntStream.range(0, 5)
+        var stopWatch = new StopWatch();
+        stopWatch.start();
+
+        int _1만 = 10000;
+        var posts = IntStream.range(0, _1만 * 1)
+                .parallel()
                 .mapToObj(i -> easyRandom.nextObject(Post.class))
-                .forEach(x -> postRepository.save(x));
+                .toList();
+
+        stopWatch.stop();
+        System.out.println("객체 생성 시간 : " + stopWatch.getTotalTimeSeconds());
+
+        var queryStopWatch = new StopWatch();
+        queryStopWatch.start();
+
+        postRepository.bulkInsert(posts);
+
+        queryStopWatch.stop();
+        System.out.println("DB 인서트 시간 : " + queryStopWatch.getTotalTimeSeconds());
     }
 
 }
