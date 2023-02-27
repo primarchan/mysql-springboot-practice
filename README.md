@@ -118,3 +118,16 @@ GROUP BY memberId, createdDate;
 - 마지막 페이지를 구하기 위해 전체 갯수를 알아야 함
 
 ### 오프셋 기반 페이징 구현 실습
+- 대용량 데이터의 경우 offset 값이 커질 수록 성능이 저하됨 -> 커서 기반 페이징이 대안으로 사용됨 
+```sql
+SELECT *
+FROM POST
+WHERE memberId = 1
+ORDER BY createdDate desc
+LIMIT 2
+OFFSET 0;
+```
+- 커서 기반 페이징
+  - 키를 기준으로 데이터 탐색범위를 최소화
+  - 전체 데이터를 조회하지 않기 때문에 게시판 형태(다음 페이지)의 UI 구현 난이도가 높음
+
