@@ -1,4 +1,4 @@
-package com.example.fastcampusmysql.domain;
+package com.example.fastcampusmysql.util;
 
 import org.springframework.data.domain.Sort;
 
