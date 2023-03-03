@@ -184,4 +184,18 @@ OFFSET 0;
   - 게시물 작성 시, 해당 회원을 팔로우하는 회원들에게 데이터를 배달한다. (게시물 작성 시 Timeline 테이블에 적재)
   - 즉, 타임라인 조회 시에는 Timeline 테이블을 조회하여 게시물들을 조회
   - Pull Model 에서의 조회 시점의 부하를 쓰기 시점 부하로 치환
-- 
+
+### 타임라인 최적화 - 정합성과 성능의 트레이드 오프
+- 정합성과 성능
+  - Push Model 은 공간복잡도를 희생, Pull Model 은 시간 복잡도를 희생
+- Push Model vs Pull Model 중 어떤 것이 정합성을 보장하기 쉬울까?
+  - Pull Model 은 원본 데이터를 직접 참조하므로, 정합성 보장에 유리
+  - 하지만, Follow 가 많은 회원일 수록 처리속도가 느리다.
+  - [Facebook 관련 링크](https://www.facebook.com/help/211926158839933?helpref=related_articles)
+  - [Twitter 관련 링크](https://help.twitter.com/ko/using-twitter/twitter-follow-limit)
+  - Push Model 에서는 게시물 작성과 타임라인 배달의 정합성 보장에 대한 고민이 필요하다.
+- 모든 회원의 타임라인에 배달되기 전까지 게시물 작성의 트랜잭션을 유지하는 것이 맞을까?
+  - CAP 이론
+  - Push Model 은 Pull Model 에 비해 시스템 복잡도가 높다.
+  - 하지만 그만큼 비지니스, 기술 측면에서 유연성을 확보시켜준다.
+  - 결국 은총알은 없다. 상황, 자원 등 여러가지를 고려해 트레이드 오프 해야한다.
