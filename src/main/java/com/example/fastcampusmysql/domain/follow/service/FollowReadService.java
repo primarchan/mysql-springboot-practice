@@ -13,8 +13,22 @@ public class FollowReadService {
 
     private final FollowRepository followRepository;
 
+    /**
+     * @apiNote Following 회원 조회
+     * @param memberId
+     * @return
+     */
     public List<Follow> getFollowings(Long memberId) {
         return followRepository.findAllByFromMemberId(memberId);
+    }
+
+    /**
+     * @apiNote Follower 회원 조회
+     * @param memberId
+     * @return
+     */
+    public List<Follow> getFollowers(Long memberId) {
+        return followRepository.findAllByToMemberId(memberId);
     }
 
 }

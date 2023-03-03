@@ -152,7 +152,7 @@ OFFSET 0;
   1. 회원의 팔로 목록 조회
   2. 1번의 팔로우 회원 id 로 게시물 조회
 
-### 타임라인 최적화
+### 타임라인 최적화 - 서비스가 커질 수록 느려지는 타임라인
 - Follow 테이블 예시
 
 |  id   |  from  |  to   |
@@ -177,3 +177,11 @@ OFFSET 0;
   - `log(Follow 전체 레코드) + 해당 회원의 Following * log(Post 전체 레코드)`
   - Fan Out On Read (Pull Model) -> 사용자가 매번 홈에 접속할 때마다 부하가 발생
 - 서비스가 커질 수록 성능이 저하되는 이슈 발생
+
+### 타임라인 최적화 - Fan On Write 방식의 타임라인 (Fan out 타임라인 이론)
+- Fan Out On Read (Pull Model)
+- Fan Out On Write (Push Model)
+  - 게시물 작성 시, 해당 회원을 팔로우하는 회원들에게 데이터를 배달한다. (게시물 작성 시 Timeline 테이블에 적재)
+  - 즉, 타임라인 조회 시에는 Timeline 테이블을 조회하여 게시물들을 조회
+  - Pull Model 에서의 조회 시점의 부하를 쓰기 시점 부하로 치환
+- 
