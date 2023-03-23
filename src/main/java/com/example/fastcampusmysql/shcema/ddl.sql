@@ -62,3 +62,13 @@ create table Timeline
     constraint Timeline_id_uindex
     primary key (id)
 );
+
+create table PostLike
+(
+    id int auto_increment,
+    memberId int not null,
+    postId int not null,
+    createdAt datetime not null,
+    constraint PostLike_id_uindex
+        primary key (id)
+);
