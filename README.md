@@ -266,6 +266,33 @@ OFFSET 0;
 - 간단하게 표현하면, 작성한 코드 한 줄은 동시에 수행될 수 있다 -> 즉, 동시에 수행되어도 이슈가 없는지 확인 필요
 
 ### 02. 쓰기락과 읽기락
+- 동시성 제어를 위한 가장 보편적인 방법은 락을 통한 줄세우기
+- 락을 통해 동시성을 제어할 때는, 락의 범위를 최소화하는 것이 중요
+- MySQL 에서는 트랜잭션의 커밋 혹은 롤백시점에 잠금이 풀린다. -> 트랜잭션이 곧 락의 범위
+- MySQL 에서는 쓰기락, 읽기락 두 가지 잠금을 제공
+
+|  구분   | 읽기락 (Shared Lock) | 쓰기락 (Exclusive Lock) |
+|:-----:|:-----------------:|:--------------------:|
+|   읽기락 (Shared Lock)   |         O         |          대기          |
+|   쓰기락 (Exclusive Lock)   |        대기         |          대기          |
+
+- 매번 잠금이 발생할 경우, 성능저하를 피할 수 없음
+  - MySQL 에서 일반 SELECT 는 nonblocking consistent read 로 동작 [참고 자료 링크](https://dev.mysql.com/doc/refman/5.7/len/innodb-consistent-read.html)
+- MySQL 에서 잠금은 Row 가 아니라 인덱스를 잠근다.
+  - 인덱스가 없는 조건으로 Locking Read 시 불필요한 데이터들이 잠길 수 있다.
+```sql
+-- 락 상태 확인
+SELECT * FROM performance_schema.data_locks
+
+-- 트랜잭션 상태 확인
+SELECT * FROM information_schema.innodb_trx;
+```
+- 추가로 공부해볼만 한 것들
+  - Java 에서의 동시성 이슈 제어방법
+  - 분산환경에서의 동시성 이슈 제어방법
+  - MySQL 의 넥스트 키락이 등장한 배경
+  - MySQL 외래키로 인한 잠금
+  - MySQL 데드락
 
 ### 03. 좋아요 기능 구현
 
