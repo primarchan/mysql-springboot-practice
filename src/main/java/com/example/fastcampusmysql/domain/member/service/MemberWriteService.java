@@ -8,6 +8,7 @@ import com.example.fastcampusmysql.domain.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -16,6 +17,7 @@ public class MemberWriteService {
     final private MemberRepository memberRepository;
     final private MemberNicknameHistoryRepository memberNicknameHistoryRepository;
 
+    @Transactional
     public Member register(RegisterMemberCommand command) {
         var member = Member.builder()
                 .nickname(command.nickname())
