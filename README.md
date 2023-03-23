@@ -227,6 +227,12 @@ OFFSET 0;
 
 ### 03. 게시물과 타임라인 정합성 보장
 
-### 0.4 트랜잭션 격리레벨
+### 04. 트랜잭션 격리레벨 (MySQL)
+- 격리 레벨 구분 기준
+  - Dirty Read, Non-Repeatable Read, Phantom READ
+- READ UNCOMMITTED
+- READ COMMITTED
+- REPEATABLE READ
+- SERIALIZABLE READ
 
 <hr>
