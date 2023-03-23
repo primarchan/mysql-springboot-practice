@@ -282,7 +282,7 @@ OFFSET 0;
   - 인덱스가 없는 조건으로 Locking Read 시 불필요한 데이터들이 잠길 수 있다.
 ```sql
 -- 락 상태 확인
-SELECT * FROM performance_schema.data_locks
+SELECT * FROM performance_schema.data_locks;
 
 -- 트랜잭션 상태 확인
 SELECT * FROM information_schema.innodb_trx;
@@ -312,3 +312,32 @@ SELECT * FROM information_schema.innodb_trx;
 ### 06. 좋아요 수 집계 테이블 분리
 
 ### 07. 읽기와 쓰기의 트레이드 오프
+- 좋아요 기능 구현
+  - 비관적 락 (Pessimistic Lock)
+    - 게시물 테이블에 컬럼 추가를 통한 구현
+  - 낙관적 락 (Optimistic Lock)
+    - 게시물 테이블에 컬럼 추가를 통한 구현
+  - 좋아요 테이블 추가를 통한 구현
+- 컬럼을 통한 구현
+  - 조회 시 컬럼만 읽어오면 됨
+  - 쓰기 시 게시물 레코드에 대한 경합이 발생 -> 하나의 자원 (게시물)을 두고 락 대기
+  - 같은 회원이 하나의 게시물에 대해 여러 번 좋아요를 누를 수 있음
+- 좋아요 테이블 추가를 통한 구현
+  - 조회 시 매번 count 쿼리 연산
+  - 쓰기 시 경합없이 insert 만 발생
+  - 회원정보 등 다양한 정보 저장 가능
+- 병목 해소하기
+  - 쓰기 지점의 병목은 하나의 레코드를 점유
+  - 조회 지점의 병목은 카운트 쿼리
+  - <b>데이터의 성질, 병목지점 등을 파악하고, 적절한 기술들을 도입하여 해소</b>
+
+<hr>
+
+## 리팩토링 포인트
+- Repository Layer 를 JPA 로 리팩토링
+- 팔로우가 100만 명인 유저의 게시물 작성 성능 테스트
+  - 비동기 Queue 를 통해 개선
+  - Mixed Push / Pull Model
+- 로그인 / 팔로우 승인, 취소 / 댓글 구현
+- MySQL Master / Slave
+- 파티셔닝
