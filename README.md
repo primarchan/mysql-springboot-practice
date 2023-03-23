@@ -265,16 +265,16 @@ OFFSET 0;
   - 항상 발생하지 않고 비결정적으로 발생한다.
 - 간단하게 표현하면, 작성한 코드 한 줄은 동시에 수행될 수 있다 -> 즉, 동시에 수행되어도 이슈가 없는지 확인 필요
 
-### 02. 쓰기락과 읽기락
+### 02. 공유 락 (Shared Lock) 과 배타 락 (Exclusive Lock)
 - 동시성 제어를 위한 가장 보편적인 방법은 락을 통한 줄세우기
 - 락을 통해 동시성을 제어할 때는, 락의 범위를 최소화하는 것이 중요
 - MySQL 에서는 트랜잭션의 커밋 혹은 롤백시점에 잠금이 풀린다. -> 트랜잭션이 곧 락의 범위
 - MySQL 에서는 쓰기락, 읽기락 두 가지 잠금을 제공
 
-|  구분   | 읽기락 (Shared Lock) | 쓰기락 (Exclusive Lock) |
-|:-----:|:-----------------:|:--------------------:|
-|   읽기락 (Shared Lock)   |         O         |          대기          |
-|   쓰기락 (Exclusive Lock)   |        대기         |          대기          |
+|          구분           | 공유 락 (Shared Lock) | 배타 락 (Exclusive Lock) |
+|:---------------------:|:------------------:|:---------------------:|
+|  공유 락 (Shared Lock)   |         O          |          대기           |
+| 배타 락 (Exclusive Lock) |         대기         |          대기           |
 
 - 매번 잠금이 발생할 경우, 성능저하를 피할 수 없음
   - MySQL 에서 일반 SELECT 는 nonblocking consistent read 로 동작 [참고 자료 링크](https://dev.mysql.com/doc/refman/5.7/len/innodb-consistent-read.html)
@@ -296,7 +296,16 @@ SELECT * FROM information_schema.innodb_trx;
 
 ### 03. 좋아요 기능 구현
 
-### 04. 낙관적 락
+### 04. 비관적 락 (Pessimistic Lock) 과 낙관적 락 (Optimistic Lock)
+- 비관적 락 (Pessimistic Lock)
+  - 동시성 이슈가 발생할 것을 가정
+  - 동시성 제어를 위한 보편적인 방법은 락을 통한 줄세우기 (공유 락, 배타 락)
+  - 락을 통한 동시성 제어는 불필요한 대기 상태를 만듬
+  - 동시성이 빈번하지 않은 커리로 인해 다른 쿼리가 대기할 수 있음
+- 낙관적 락 (Optimistic Lock)
+  - 동시성 이슈가 빈번하지 않기를 기대하고, 어플리케이션에서 제어한다.
+  - CAS (Compare and Set) 을 통해 제어
+  - 실패에 대한 처리를 직접 구현
 
 ### 05. 낙관적 락으로 좋아요 구현
 
